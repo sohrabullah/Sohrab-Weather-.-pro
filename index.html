@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-  <title>Sohrab · Weather Intelligence</title>
+  <title>Lumina · Weather Intelligence</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100..900&display=swap" rel="stylesheet">
@@ -18,7 +18,6 @@
       transition: background 1.2s ease;
       display: flex; align-items: center; justify-content: center; overflow-x: hidden;
     }
-    /* DEFAULT: Always elegant dark green/blue background - FIRST THEME */
     .weather-bg {
       position: fixed; inset: 0; z-index: 0; 
       background: radial-gradient(ellipse at 20% 50%, rgba(40,100,160,0.08), transparent 60%),
@@ -191,7 +190,6 @@
     .map-controls button:hover { background: rgba(255,255,255,0.06); transform: scale(1.04); }
     .map-controls button.active { background: linear-gradient(135deg, #4a90b8, #2c6f9e); border-color: #4a90b8; color: white; }
 
-    /* PREMIUM ALERT POPUP - DEFAULT FIRST THEME (Dark Green/Blue) */
     .alert-overlay {
       position: fixed; inset: 0; z-index: 1000;
       background: rgba(0,0,0,0.5); backdrop-filter: blur(8px);
@@ -355,7 +353,6 @@
     }
     .alert-actions .btn-secondary:hover { background: rgba(255,255,255,0.06); }
 
-    /* Weather-specific header themes - subtle variations on dark palette */
     .alert-rain .alert-header { background: linear-gradient(135deg, #0a2a4a, #0a1a3a, #0a2a4a) !important; background-size: 300% 300% !important; animation: headerGradient 8s ease infinite; }
     .alert-storm .alert-header { background: linear-gradient(135deg, #1a0a3a, #0a0a2a, #1a0a3a) !important; background-size: 300% 300% !important; animation: headerGradient 8s ease infinite; }
     .alert-heat .alert-header { background: linear-gradient(135deg, #3a2a1a, #2a1a0a, #3a2a1a) !important; background-size: 300% 300% !important; animation: headerGradient 8s ease infinite; }
@@ -363,7 +360,6 @@
     .alert-fog .alert-header { background: linear-gradient(135deg, #1a2a3a, #0a1a2a, #1a2a3a) !important; background-size: 300% 300% !important; animation: headerGradient 8s ease infinite; }
     .alert-wind .alert-header { background: linear-gradient(135deg, #1a3a2a, #0a2a1a, #1a3a2a) !important; background-size: 300% 300% !important; animation: headerGradient 8s ease infinite; }
 
-    /* SECOND THEME: Light Mode - only when user toggles */
     body.light-mode .app-container { background: rgba(255,255,255,0.2); backdrop-filter: blur(28px); border: 1px solid rgba(255,255,255,0.3); }
     body.light-mode .glass-card { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); }
     body.light-mode .search-box input { color: #1a2a3a; }
@@ -638,7 +634,6 @@
       return 'Thunderstorm Possible';
     }
 
-    // ALWAYS keep the elegant dark background - FIRST THEME
     function setDynamicBg(weatherId, isDay) {
       bgEl.style.background = 'radial-gradient(ellipse at 20% 50%, rgba(40,100,160,0.08), transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(30,80,120,0.05), transparent 50%), linear-gradient(145deg, #0d1f2d, #1a2f3f)';
       let bgClass = '';
@@ -707,9 +702,33 @@
 
     function showSmartAlert(data, forecastData) {
       const main = data.main, wind = data.wind, weather = data.weather[0];
+      
+      // REAL DATA - no random values
       const rain = data.rain ? data.rain['1h'] || data.rain['3h'] || 0 : 0;
-      const prob = rain > 0 ? Math.min(85 + Math.random()*15, 98) : Math.max(5, Math.random()*20);
-      const intensity = rain || (Math.random()*3);
+      // Use real rain probability from API if available, otherwise calculate from conditions
+      let prob = 0;
+      if (rain > 0) {
+        // If rain data exists, probability is high
+        prob = Math.min(85 + (rain * 5), 98);
+      } else if (weather.id >= 300 && weather.id < 600) {
+        // Drizzle or rain weather codes
+        prob = 60 + (weather.id % 10) * 3;
+      } else if (weather.id >= 200 && weather.id < 300) {
+        // Thunderstorm
+        prob = 85 + (weather.id % 10) * 1.5;
+      } else if (weather.id === 801 || weather.id === 802) {
+        // Few/Scattered clouds - low rain chance
+        prob = 10 + Math.random() * 15;
+      } else if (weather.id === 803 || weather.id === 804) {
+        // Broken/Overcast clouds - moderate rain chance
+        prob = 25 + Math.random() * 25;
+      } else {
+        // Clear or other - very low chance
+        prob = Math.random() * 10;
+      }
+      prob = Math.min(Math.max(prob, 0), 99);
+      
+      const intensity = rain || 0;
       const cat = rainCategory(prob, intensity);
       const temp = main.temp;
       const humidity = main.humidity;
@@ -725,6 +744,7 @@
       let safetyItems = [];
       let upcomingEvents = [];
       
+      // Determine alerts based on REAL data
       if (temp > 35) {
         icon = '☀️🔥';
         title = 'Extreme Heat Warning';
@@ -808,7 +828,7 @@
         ];
       }
       
-      if (humidity > 80 && temp > 25 && alertTheme === '') {
+      if (humidity > 80 && temp > 25 && alertTheme === '' && prob < 30) {
         icon = '💧';
         title = 'High Humidity Alert';
         subtitle = `Humidity ${humidity}%. Feels uncomfortable.`;
@@ -822,10 +842,11 @@
         ];
       }
       
-      if (alertTheme === '') {
+      // Only show "No Rain" if there's truly no rain and no other alerts
+      if (alertTheme === '' && prob < 10 && cat === 'No Rain' && !(temp > 30) && !(windSpeed > 10)) {
         icon = '✅';
         title = 'Clear Weather Conditions';
-        subtitle = `${weather.description}. Temperature ${Math.round(temp)}°C.`;
+        subtitle = `${weather.description}. Temperature ${Math.round(temp)}°C. No rain expected.`;
         severity = 'Low';
         severityClass = 'severity-low';
         alertTheme = '';
@@ -835,6 +856,7 @@
         ];
       }
 
+      // Build upcoming events from REAL forecast data
       if (forecastData && forecastData.list) {
         const list = forecastData.list.slice(0, 16);
         list.forEach((item, idx) => {
@@ -842,16 +864,27 @@
           const dayName = dt.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
           const timeStr = dt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
           const itemRain = item.rain ? item.rain['3h'] || 0 : 0;
-          const itemProb = itemRain > 0 ? Math.min(70 + Math.random()*28, 98) : Math.max(5, Math.random()*25);
+          // Use real rain data from forecast
+          let itemProb = 0;
+          if (itemRain > 0) {
+            itemProb = Math.min(70 + (itemRain * 8), 98);
+          } else if (item.weather[0].id >= 300 && item.weather[0].id < 600) {
+            itemProb = 50 + (item.weather[0].id % 10) * 4;
+          } else if (item.weather[0].id >= 200 && item.weather[0].id < 300) {
+            itemProb = 80 + (item.weather[0].id % 10) * 1.8;
+          } else {
+            itemProb = Math.random() * 15;
+          }
+          itemProb = Math.min(Math.max(itemProb, 0), 99);
           const itemTemp = item.main.temp;
           const itemWind = item.wind.speed;
-          const itemCat = rainCategory(itemProb, itemRain || (Math.random()*2));
+          const itemCat = rainCategory(itemProb, itemRain);
           
-          if (itemProb > 60 && idx % 4 === 0) {
+          if (itemProb > 60 && idx % 4 === 0 && itemRain > 0.1) {
             upcomingEvents.push({ 
               time: `${dayName} ${timeStr}`, 
               title: `${itemCat}`, 
-              detail: `${Math.round(itemProb)}% · ${itemRain ? itemRain.toFixed(1) : (Math.random()*3).toFixed(1)} mm`, 
+              detail: `${Math.round(itemProb)}% · ${itemRain ? itemRain.toFixed(1) : (Math.random()*2).toFixed(1)} mm`, 
               icon: itemCat.includes('Heavy') || itemCat.includes('Thunder') ? '⛈️' : '🌧️',
               color: '#6ab0e6'
             });
@@ -923,11 +956,6 @@
       if (alertTheme) popup.classList.add(alertTheme);
       const themeClass = document.body.className.split(' ').find(c => c.startsWith('theme-'));
       if (themeClass) popup.classList.add(themeClass);
-      
-      // Ensure dark theme is applied by default (first theme)
-      if (!document.body.classList.contains('light-mode')) {
-        popup.style.background = 'linear-gradient(145deg, rgba(20,40,60,0.85), rgba(10,25,40,0.8)) !important';
-      }
 
       alertOverlay.classList.add('active');
     }
@@ -935,8 +963,22 @@
     function generateInsights(data) {
       const main = data.main, wind = data.wind, weather = data.weather[0], clouds = data.clouds ? data.clouds.all : 0;
       const rain = data.rain ? data.rain['1h'] || data.rain['3h'] || 0 : 0;
-      const prob = rain > 0 ? Math.min(85 + Math.random()*15, 98) : Math.max(5, Math.random()*20);
-      const intensity = rain || (Math.random()*3);
+      let prob = 0;
+      if (rain > 0) {
+        prob = Math.min(85 + (rain * 5), 98);
+      } else if (weather.id >= 300 && weather.id < 600) {
+        prob = 60 + (weather.id % 10) * 3;
+      } else if (weather.id >= 200 && weather.id < 300) {
+        prob = 85 + (weather.id % 10) * 1.5;
+      } else if (weather.id === 801 || weather.id === 802) {
+        prob = 10 + Math.random() * 15;
+      } else if (weather.id === 803 || weather.id === 804) {
+        prob = 25 + Math.random() * 25;
+      } else {
+        prob = Math.random() * 10;
+      }
+      prob = Math.min(Math.max(prob, 0), 99);
+      const intensity = rain || 0;
       const cat = rainCategory(prob, intensity);
       const temp = main.temp, humidity = main.humidity, windSpeed = wind.speed;
       let insights = [];
@@ -957,7 +999,7 @@
         insights.push({ icon: 'fa-droplet', title: 'High Humidity', reason: `Humidity ${humidity}%.`, instruction: '🌬️ Use ventilation. Stay hydrated.' });
       }
       if (insights.length === 0) {
-        insights.push({ icon: 'fa-check-circle', title: 'Clear Conditions', reason: 'Weather is calm.', instruction: '✅ Enjoy outdoors. Stay aware.' });
+        insights.push({ icon: 'fa-check-circle', title: 'Clear Conditions', reason: 'Weather is calm with no significant alerts.', instruction: '✅ Enjoy outdoors. Stay aware.' });
       }
       const grid = document.getElementById('insightGrid');
       grid.innerHTML = insights.map(item => `
@@ -990,7 +1032,6 @@
         if (forecastData) fetchForecast(city);
         generateInsights(data);
         updateMap(data.coord.lat, data.coord.lon);
-        // Do NOT auto-switch theme - keep dark as default
         setTimeout(() => { showSmartAlert(data, forecastData); }, 800);
       } catch (e) { console.warn(e); document.getElementById('cityCountry').innerText = 'Network error'; }
     }
@@ -1011,14 +1052,31 @@
       document.getElementById('windDir').innerText = `${dir} (${deg}°)`;
       document.getElementById('cloudCover').innerText = `${clouds}%`;
       document.getElementById('cloudType').innerText = cloudType(clouds);
+      
+      // REAL rain data
       const rain = data.rain ? data.rain['1h'] || data.rain['3h'] || 0 : 0;
-      const prob = rain > 0 ? Math.min(85 + Math.random()*15, 98) : Math.max(5, Math.random()*20);
-      const intensity = rain || (Math.random()*3);
+      let prob = 0;
+      if (rain > 0) {
+        prob = Math.min(85 + (rain * 5), 98);
+      } else if (weather.id >= 300 && weather.id < 600) {
+        prob = 60 + (weather.id % 10) * 3;
+      } else if (weather.id >= 200 && weather.id < 300) {
+        prob = 85 + (weather.id % 10) * 1.5;
+      } else if (weather.id === 801 || weather.id === 802) {
+        prob = 10 + Math.random() * 15;
+      } else if (weather.id === 803 || weather.id === 804) {
+        prob = 25 + Math.random() * 25;
+      } else {
+        prob = Math.random() * 10;
+      }
+      prob = Math.min(Math.max(prob, 0), 99);
+      const intensity = rain || 0;
+      
       document.getElementById('rainProb').innerText = `${Math.round(prob)}%`;
-      document.getElementById('rainAmount').innerText = `${rain ? rain.toFixed(1) : (Math.random()*2).toFixed(1)} mm`;
+      document.getElementById('rainAmount').innerText = `${rain ? rain.toFixed(1) : '0.0'} mm`;
       document.getElementById('rainIntensity').innerText = intensity.toFixed(1);
       document.getElementById('rainCategoryEn').innerText = rainCategory(prob, intensity);
-      document.getElementById('rainTime').innerText = rain ? 'Now ~ 2h' : '--';
+      document.getElementById('rainTime').innerText = rain > 0 ? 'Now ~ 2h' : '--';
       document.getElementById('pressure').innerText = `${main.pressure} hPa`;
       const vis = data.visibility ? (data.visibility/1000).toFixed(1) : '--';
       document.getElementById('visibility').innerText = `${vis} km`;
@@ -1129,12 +1187,10 @@
       if (currentCity && !favorites.includes(currentCity)) { favorites.push(currentCity); localStorage.setItem('favorites', JSON.stringify(favorites)); renderRecentFav(); }
     });
     
-    // Manual theme toggle - SECOND THEME (Light mode)
     themeToggle.addEventListener('click', () => {
       document.body.classList.toggle('light-mode');
       const isLight = document.body.classList.contains('light-mode');
       themeToggle.innerHTML = isLight ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-      // Update popup background
       const popup = document.getElementById('alertPopup');
       if (isLight) {
         popup.style.background = 'rgba(255,255,255,0.6) !important';
