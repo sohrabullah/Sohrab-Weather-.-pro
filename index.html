@@ -193,118 +193,212 @@
     .map-controls button:hover { background: rgba(255,255,255,0.12); transform: scale(1.04); }
     .map-controls button.active { background: linear-gradient(135deg, #6c8cff, #4f72e0); border-color: #4f72e0; color: white; }
 
-    /* SMART ALERT POPUP */
+    /* ===== PREMIUM REDESIGNED ALERT POPUP ===== */
     .alert-overlay {
       position: fixed; inset: 0; z-index: 1000;
-      background: rgba(0,0,0,0.5); backdrop-filter: blur(8px);
+      background: rgba(0,0,0,0.4); backdrop-filter: blur(12px);
       display: none; align-items: center; justify-content: center;
       animation: fadeInOverlay 0.5s ease;
     }
     .alert-overlay.active { display: flex; }
     @keyframes fadeInOverlay { from { opacity:0; } to { opacity:1; } }
+
     .alert-popup {
-      max-width: 580px; width: 94%; max-height: 90vh; overflow-y: auto;
-      border-radius: 40px; padding: 28px 24px 32px;
-      background: linear-gradient(145deg, rgba(255,255,255,0.15), rgba(255,255,255,0.04));
-      backdrop-filter: blur(24px); border: 1px solid rgba(255,255,255,0.2);
-      box-shadow: 0 40px 80px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
-      animation: popupIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+      max-width: 600px; width: 92%; max-height: 92vh; overflow-y: auto;
+      border-radius: 48px; padding: 0;
       position: relative;
-      color: #fff;
+      box-shadow: 0 40px 100px rgba(0,0,0,0.6);
+      animation: popupIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+      background: linear-gradient(145deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+      backdrop-filter: blur(24px);
+      border: 1px solid rgba(255,255,255,0.15);
+      overflow: hidden;
     }
+    .alert-popup::-webkit-scrollbar { width: 4px; }
+    .alert-popup::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
     @keyframes popupIn { 
-      0% { opacity:0; transform: scale(0.8) translateY(30px); } 
+      0% { opacity:0; transform: scale(0.85) translateY(40px); } 
       100% { opacity:1; transform: scale(1) translateY(0); } 
     }
-    .alert-popup .close-btn {
-      position: absolute; top: 14px; right: 18px;
-      background: rgba(255,255,255,0.1); border: none;
-      color: rgba(255,255,255,0.7); font-size: 1.4rem; width: 40px; height: 40px;
-      border-radius: 40px; cursor: pointer; transition: 0.3s;
+
+    /* HEADER with animated gradient */
+    .alert-header {
+      padding: 28px 24px 22px;
+      position: relative;
+      overflow: hidden;
+      border-radius: 48px 48px 0 0;
+      background: linear-gradient(135deg, #6c8cff, #4f72e0, #6c8cff);
+      background-size: 300% 300%;
+      animation: headerGradient 6s ease infinite;
+      color: #fff;
+    }
+    @keyframes headerGradient { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+    .alert-header::after {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(circle at 20% 30%, rgba(255,255,255,0.15), transparent 60%);
+      pointer-events: none;
+    }
+    .alert-header .header-row {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      position: relative; z-index: 2;
+    }
+    .alert-header .header-left { display: flex; flex-direction: column; gap: 2px; }
+    .alert-header .header-icon { font-size: 3.6rem; animation: floatIcon 3s ease-in-out infinite; display: block; margin-bottom: 4px; }
+    @keyframes floatIcon { 0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-8px) scale(1.05)} }
+    .alert-header .alert-title { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.02em; text-shadow: 0 2px 20px rgba(0,0,0,0.15); }
+    .alert-header .alert-subtitle { font-size: 0.95rem; opacity: 0.9; }
+    .alert-header .alert-location { font-size: 0.75rem; opacity: 0.7; margin-top: 2px; }
+    .alert-header .severity-badge {
+      display: inline-block; padding: 4px 16px; border-radius: 40px;
+      font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+      background: rgba(255,255,255,0.2); backdrop-filter: blur(4px);
+      border: 1px solid rgba(255,255,255,0.15);
+      margin-top: 6px;
+    }
+    .severity-high { background: linear-gradient(135deg, #ff4757, #ff6b81) !important; color: #fff; }
+    .severity-moderate { background: linear-gradient(135deg, #ffa502, #fdcb6e) !important; color: #fff; }
+    .severity-low { background: linear-gradient(135deg, #2ed573, #7bed9f) !important; color: #fff; }
+
+    /* CLOSE BUTTON - large red circular */
+    .alert-close-btn {
+      position: absolute; top: 16px; right: 16px; z-index: 10;
+      width: 48px; height: 48px; border-radius: 50%;
+      background: linear-gradient(135deg, #ff4757, #ff6b81);
+      border: none; color: white; font-size: 1.4rem;
+      cursor: pointer; transition: 0.3s;
+      box-shadow: 0 4px 20px rgba(255,70,70,0.4);
       display: flex; align-items: center; justify-content: center;
     }
-    .alert-popup .close-btn:hover { background: rgba(255,255,255,0.2); transform: rotate(90deg); }
-    .alert-popup .alert-icon { font-size: 3.2rem; margin-bottom: 6px; display: block; }
-    .alert-popup .alert-title { font-size: 1.6rem; font-weight: 700; margin-bottom: 4px; background: linear-gradient(135deg, #ffd93d, #ff6b6b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .alert-popup .alert-subtitle { font-size: 1rem; opacity: 0.8; margin-bottom: 16px; }
-    .alert-popup .alert-detail-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 8px 14px;
-      background: rgba(255,255,255,0.04); border-radius: 20px; padding: 14px 16px;
-      margin: 8px 0 14px; border: 1px solid rgba(255,255,255,0.06);
+    .alert-close-btn:hover { transform: rotate(90deg) scale(1.1); box-shadow: 0 6px 30px rgba(255,70,70,0.6); }
+    .alert-close-btn:active { transform: scale(0.9); }
+
+    /* BODY */
+    .alert-body { padding: 20px 22px 26px; }
+
+    /* Glass cards inside popup */
+    .alert-glass-card {
+      background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(12px);
+      border-radius: 24px; padding: 16px 18px;
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+      margin-bottom: 14px;
+      transition: 0.3s;
     }
-    .alert-popup .alert-detail-grid .item {
+    .alert-glass-card:hover { border-color: rgba(255,255,255,0.15); }
+
+    .alert-glass-card .card-label {
+      font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.08em;
+      color: rgba(255,255,255,0.4); margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    /* Weather detail grid inside popup */
+    .alert-detail-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 6px 14px;
+    }
+    .alert-detail-grid .item {
       display: flex; justify-content: space-between; font-size: 0.85rem;
       padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+      color: rgba(255,255,255,0.85);
     }
-    .alert-popup .alert-detail-grid .item .label { opacity: 0.5; }
-    .alert-popup .alert-detail-grid .item .value { font-weight: 500; }
-    .alert-popup .safety-section {
-      background: rgba(255,255,255,0.04); border-radius: 18px; padding: 14px 16px;
-      margin: 10px 0 12px; border-left: 4px solid #6fcf97;
-    }
-    .alert-popup .safety-section .safety-title { font-weight: 600; font-size: 0.85rem; color: #b8e0b0; margin-bottom: 6px; }
-    .alert-popup .safety-section ul { list-style: none; padding: 0; font-size: 0.8rem; opacity: 0.8; }
-    .alert-popup .safety-section ul li { padding: 2px 0 2px 20px; position: relative; }
-    .alert-popup .safety-section ul li::before { content: "•"; position: absolute; left: 4px; color: #6fcf97; }
-    .alert-popup .upcoming-events {
-      margin: 12px 0 16px;
-    }
-    .alert-popup .upcoming-events .event-card {
-      display: flex; align-items: center; gap: 12px;
-      background: rgba(255,255,255,0.04); border-radius: 16px; padding: 10px 14px;
-      margin-bottom: 6px; border-left: 3px solid #6c8cff;
-    }
-    .alert-popup .upcoming-events .event-card .e-icon { font-size: 1.4rem; }
-    .alert-popup .upcoming-events .event-card .e-info { flex: 1; font-size: 0.8rem; }
-    .alert-popup .upcoming-events .event-card .e-info .e-title { font-weight: 600; }
-    .alert-popup .upcoming-events .event-card .e-info .e-detail { opacity: 0.6; font-size: 0.7rem; }
-    .alert-popup .action-buttons {
-      display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px;
-    }
-    .alert-popup .action-buttons button {
-      flex: 1; min-width: 100px; padding: 10px 16px; border-radius: 40px;
-      border: none; font-weight: 600; font-size: 0.8rem; cursor: pointer;
-      transition: 0.3s; background: rgba(255,255,255,0.08); color: #fff;
-      border: 1px solid rgba(255,255,255,0.06);
-    }
-    .alert-popup .action-buttons button:hover { background: rgba(255,255,255,0.15); transform: scale(1.02); }
-    .alert-popup .action-buttons button.primary { background: linear-gradient(135deg, #6c8cff, #4f72e0); border: none; }
+    .alert-detail-grid .item .label { opacity: 0.5; font-weight: 400; }
+    .alert-detail-grid .item .value { font-weight: 600; }
 
-    /* Dynamic Weather Themes - Vibrant & Colorful */
-    .theme-sunny .glass-card { background: linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,150,50,0.08)); border-color: rgba(255,215,0,0.25); }
-    .theme-sunny .card-title i { color: #f9ca24; }
-    .theme-sunny .weather-main { background: linear-gradient(135deg, rgba(255,215,0,0.15), rgba(255,150,50,0.08)); }
-    .theme-sunny .alert-popup { background: linear-gradient(145deg, rgba(255,215,0,0.25), rgba(255,150,50,0.1)); border-color: rgba(255,215,0,0.3); }
-    
-    .theme-night .glass-card { background: linear-gradient(135deg, rgba(100,80,200,0.15), rgba(60,40,120,0.08)); border-color: rgba(150,100,255,0.2); }
-    .theme-night .card-title i { color: #a29bfe; }
-    .theme-night .weather-main { background: linear-gradient(135deg, rgba(100,80,200,0.12), rgba(60,40,120,0.08)); }
-    .theme-night .alert-popup { background: linear-gradient(145deg, rgba(100,80,200,0.2), rgba(60,40,120,0.1)); border-color: rgba(150,100,255,0.25); }
-    
-    .theme-cloudy .glass-card { background: linear-gradient(135deg, rgba(180,200,220,0.15), rgba(100,120,140,0.08)); border-color: rgba(180,200,220,0.2); }
-    .theme-cloudy .card-title i { color: #dfe6e9; }
-    .theme-cloudy .weather-main { background: linear-gradient(135deg, rgba(180,200,220,0.12), rgba(100,120,140,0.08)); }
-    .theme-cloudy .alert-popup { background: linear-gradient(145deg, rgba(180,200,220,0.2), rgba(100,120,140,0.1)); border-color: rgba(180,200,220,0.2); }
-    
-    .theme-rain .glass-card { background: linear-gradient(135deg, rgba(40,120,220,0.2), rgba(20,60,160,0.1)); border-color: rgba(74,178,255,0.25); }
-    .theme-rain .card-title i { color: #74b9ff; }
-    .theme-rain .weather-main { background: linear-gradient(135deg, rgba(40,120,220,0.15), rgba(20,60,160,0.08)); }
-    .theme-rain .alert-popup { background: linear-gradient(145deg, rgba(40,120,220,0.25), rgba(20,60,160,0.12)); border-color: rgba(74,178,255,0.3); }
-    
-    .theme-storm .glass-card { background: linear-gradient(135deg, rgba(120,60,200,0.2), rgba(80,30,160,0.1)); border-color: rgba(160,100,255,0.25); }
-    .theme-storm .card-title i { color: #a29bfe; }
-    .theme-storm .weather-main { background: linear-gradient(135deg, rgba(120,60,200,0.15), rgba(80,30,160,0.08)); }
-    .theme-storm .alert-popup { background: linear-gradient(145deg, rgba(120,60,200,0.25), rgba(80,30,160,0.12)); border-color: rgba(160,100,255,0.3); }
-    
-    .theme-snow .glass-card { background: linear-gradient(135deg, rgba(200,230,255,0.2), rgba(180,200,240,0.1)); border-color: rgba(255,255,255,0.25); }
-    .theme-snow .card-title i { color: #dfe6e9; }
-    .theme-snow .weather-main { background: linear-gradient(135deg, rgba(200,230,255,0.15), rgba(180,200,240,0.08)); }
-    .theme-snow .alert-popup { background: linear-gradient(145deg, rgba(200,230,255,0.25), rgba(180,200,240,0.12)); border-color: rgba(255,255,255,0.3); }
-    
-    .theme-fog .glass-card { background: linear-gradient(135deg, rgba(180,200,220,0.15), rgba(140,160,180,0.08)); border-color: rgba(200,210,220,0.2); }
-    .theme-fog .card-title i { color: #b2bec3; }
-    .theme-fog .weather-main { background: linear-gradient(135deg, rgba(180,200,220,0.12), rgba(140,160,180,0.08)); }
-    .theme-fog .alert-popup { background: linear-gradient(145deg, rgba(180,200,220,0.2), rgba(140,160,180,0.1)); border-color: rgba(200,210,220,0.2); }
+    /* Safety recommendations as cards */
+    .safety-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+    }
+    .safety-card {
+      background: rgba(255,255,255,0.04);
+      border-radius: 16px; padding: 12px 14px;
+      border-left: 3px solid #6fcf97;
+      transition: 0.3s;
+    }
+    .safety-card:hover { background: rgba(255,255,255,0.07); }
+    .safety-card .safety-icon { font-size: 1.2rem; margin-right: 6px; }
+    .safety-card .safety-text { font-size: 0.75rem; color: rgba(255,255,255,0.8); line-height: 1.3; }
+    .safety-card .safety-priority {
+      display: inline-block; font-size: 0.55rem; font-weight: 700; text-transform: uppercase;
+      padding: 1px 10px; border-radius: 20px; margin-top: 4px;
+    }
+    .priority-high { background: #ff4757; color: #fff; }
+    .priority-moderate { background: #ffa502; color: #fff; }
+    .priority-low { background: #2ed573; color: #fff; }
+
+    /* Upcoming events as colorful cards */
+    .event-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+    }
+    .event-card-popup {
+      border-radius: 16px; padding: 12px 14px;
+      background: rgba(255,255,255,0.04);
+      border-left: 3px solid #6c8cff;
+      transition: 0.3s;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .event-card-popup:hover { background: rgba(255,255,255,0.07); transform: scale(1.01); }
+    .event-card-popup .e-icon { font-size: 1.6rem; }
+    .event-card-popup .e-info { flex: 1; }
+    .event-card-popup .e-info .e-title { font-weight: 600; font-size: 0.8rem; }
+    .event-card-popup .e-info .e-detail { font-size: 0.65rem; opacity: 0.6; }
+
+    /* Action buttons */
+    .alert-actions {
+      display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px;
+    }
+    .alert-actions button {
+      flex: 1; min-width: 100px; padding: 12px 18px; border-radius: 40px;
+      border: none; font-weight: 600; font-size: 0.85rem; cursor: pointer;
+      transition: 0.3s; 
+    }
+    .alert-actions .btn-primary {
+      background: linear-gradient(135deg, #6c8cff, #4f72e0);
+      color: white; box-shadow: 0 6px 24px rgba(108,140,255,0.3);
+    }
+    .alert-actions .btn-primary:hover { transform: scale(1.03); box-shadow: 0 8px 32px rgba(108,140,255,0.5); }
+    .alert-actions .btn-secondary {
+      background: rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,0.08);
+    }
+    .alert-actions .btn-secondary:hover { background: rgba(255,255,255,0.12); }
+
+    /* Weather-specific header themes */
+    .alert-rain .alert-header { background: linear-gradient(135deg, #0652DD, #1B1464, #0652DD); background-size: 300% 300%; animation: headerGradient 6s ease infinite; }
+    .alert-storm .alert-header { background: linear-gradient(135deg, #6c2ed4, #1a0a3a, #6c2ed4); background-size: 300% 300%; animation: headerGradient 6s ease infinite; }
+    .alert-heat .alert-header { background: linear-gradient(135deg, #e74c3c, #f39c12, #e74c3c); background-size: 300% 300%; animation: headerGradient 6s ease infinite; }
+    .alert-snow .alert-header { background: linear-gradient(135deg, #74b9ff, #dfe6e9, #74b9ff); background-size: 300% 300%; animation: headerGradient 6s ease infinite; }
+    .alert-fog .alert-header { background: linear-gradient(135deg, #636e72, #b2bec3, #636e72); background-size: 300% 300%; animation: headerGradient 6s ease infinite; }
+    .alert-wind .alert-header { background: linear-gradient(135deg, #00b894, #00cec9, #00b894); background-size: 300% 300%; animation: headerGradient 6s ease infinite; }
+
+    /* Light mode overrides for popup */
+    body.light-mode .alert-popup { background: rgba(255,255,255,0.85); backdrop-filter: blur(24px); border: 1px solid rgba(255,255,255,0.5); }
+    body.light-mode .alert-glass-card { background: rgba(255,255,255,0.3); border: 1px solid rgba(255,255,255,0.3); }
+    body.light-mode .alert-detail-grid .item { color: #1a2a3a; }
+    body.light-mode .safety-card { background: rgba(0,0,0,0.02); }
+    body.light-mode .safety-card .safety-text { color: #1a2a3a; }
+    body.light-mode .event-card-popup { background: rgba(0,0,0,0.02); }
+    body.light-mode .event-card-popup .e-info .e-title { color: #1a2a3a; }
+    body.light-mode .alert-glass-card .card-label { color: rgba(0,0,0,0.4); }
+    body.light-mode .alert-actions .btn-secondary { color: #1a2a3a; background: rgba(0,0,0,0.04); }
+    body.light-mode .alert-actions .btn-secondary:hover { background: rgba(0,0,0,0.08); }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      .alert-popup { width: 96%; border-radius: 32px; max-height: 95vh; }
+      .alert-header { padding: 20px 16px 16px; border-radius: 32px 32px 0 0; }
+      .alert-header .header-icon { font-size: 2.8rem; }
+      .alert-header .alert-title { font-size: 1.3rem; }
+      .alert-body { padding: 14px 14px 18px; }
+      .alert-detail-grid { grid-template-columns: 1fr; }
+      .safety-grid { grid-template-columns: 1fr; }
+      .event-grid { grid-template-columns: 1fr; }
+      .alert-close-btn { width: 40px; height: 40px; font-size: 1.1rem; top: 12px; right: 12px; }
+      .alert-glass-card { padding: 12px 14px; }
+    }
+    @media (min-width: 768px) {
+      .alert-popup { max-width: 620px; }
+    }
 
     body.light-mode .app-container { background: rgba(255,255,255,0.3); backdrop-filter: blur(28px); border: 1px solid rgba(255,255,255,0.5); }
     body.light-mode .glass-card { background: rgba(255,255,255,0.25); border: 1px solid rgba(255,255,255,0.4); }
@@ -323,16 +417,6 @@
     body.light-mode .insight-item .insight-title { color: #1a3a6a; }
     body.light-mode .insight-item .insight-reason { color: #2a3a4a; }
     body.light-mode .insight-item .insight-instruction { color: #1a4a2a; background: rgba(0,0,0,0.04); }
-    body.light-mode .alert-popup { color: #1a2a3a; }
-    body.light-mode .alert-popup .close-btn { color: #1a2a3a; background: rgba(0,0,0,0.04); }
-    body.light-mode .alert-popup .close-btn:hover { background: rgba(0,0,0,0.08); }
-    body.light-mode .alert-popup .alert-title { background: linear-gradient(135deg, #e17055, #d63031); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    body.light-mode .alert-popup .alert-detail-grid { background: rgba(0,0,0,0.02); }
-    body.light-mode .alert-popup .safety-section { background: rgba(0,0,0,0.02); }
-    body.light-mode .alert-popup .upcoming-events .event-card { background: rgba(0,0,0,0.02); }
-    body.light-mode .alert-popup .action-buttons button { color: #1a2a3a; background: rgba(0,0,0,0.04); }
-    body.light-mode .alert-popup .action-buttons button:hover { background: rgba(0,0,0,0.08); }
-
     .dark-mode-toggle {
       position: fixed; top: 16px; right: 16px; z-index: 99;
       background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
@@ -341,31 +425,6 @@
       backdrop-filter: blur(8px); cursor: pointer; transition: 0.3s;
     }
     .dark-mode-toggle:hover { background: rgba(255,255,255,0.15); transform: scale(1.08); }
-    @media (max-width: 480px) {
-      .app-container { padding: 14px 12px; border-radius: 32px; }
-      .weather-main .temp { font-size: 2.4rem; }
-      .detail-grid { grid-template-columns: 1fr; }
-      .earth-container { width: 100px; height: 100px; }
-      #weatherMap { height: 180px; }
-      .search-box input { font-size: 0.85rem; padding: 10px 4px; }
-      .search-box button { padding: 8px 18px; font-size: 0.75rem; }
-      .glass-card { padding: 14px 12px; border-radius: 24px; }
-      .dashboard { gap: 14px; }
-      .forecast-item { min-width: 90px; padding: 10px 8px; }
-      .forecast-item img { width: 34px; height: 34px; }
-      .alert-popup { padding: 20px 16px 24px; }
-      .alert-popup .alert-detail-grid { grid-template-columns: 1fr; }
-    }
-    @media (min-width: 768px) {
-      .dashboard { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
-      .weather-main .temp { font-size: 4.2rem; }
-      .earth-container { width: 160px; height: 160px; }
-      .forecast-item { min-width: 140px; }
-    }
-    @media (min-width: 1200px) {
-      .app-container { padding: 36px 40px 44px; border-radius: 64px; }
-      .dashboard { gap: 28px; }
-    }
     .warning-flash { animation: flashBorder 1.2s infinite; }
     @keyframes flashBorder { 0%{border-color:rgba(255,70,70,0.3);}50%{border-color:#ff4757;}100%{border-color:rgba(255,70,70,0.3);} }
     .ripple { position: relative; overflow: hidden; }
@@ -484,10 +543,59 @@
     </div>
   </div>
 
+  <!-- PREMIUM REDESIGNED ALERT POPUP -->
   <div class="alert-overlay" id="alertOverlay">
     <div class="alert-popup" id="alertPopup">
-      <button class="close-btn" id="alertCloseBtn"><i class="fas fa-times"></i></button>
-      <div id="alertContentInner"></div>
+      <!-- Header with animated gradient -->
+      <div class="alert-header" id="alertHeader">
+        <button class="alert-close-btn" id="alertCloseBtn"><i class="fas fa-times"></i></button>
+        <div class="header-row">
+          <div class="header-left">
+            <span class="header-icon" id="popupIcon">🌤️</span>
+            <div class="alert-title" id="popupTitle">Weather Update</div>
+            <div class="alert-subtitle" id="popupSubtitle">Current conditions are stable</div>
+            <div class="alert-location" id="popupLocation">📍 --</div>
+            <span class="severity-badge" id="popupSeverity">Low</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Body -->
+      <div class="alert-body" id="alertBody">
+        <!-- Weather details card -->
+        <div class="alert-glass-card">
+          <div class="card-label"><i class="fas fa-chart-simple"></i> Current Weather</div>
+          <div class="alert-detail-grid" id="popupDetails">
+            <!-- populated by JS -->
+          </div>
+        </div>
+
+        <!-- Safety Recommendations -->
+        <div class="alert-glass-card">
+          <div class="card-label"><i class="fas fa-shield-alt"></i> Safety Recommendations</div>
+          <div class="safety-grid" id="popupSafety">
+            <!-- populated by JS -->
+          </div>
+        </div>
+
+        <!-- Upcoming Events -->
+        <div class="alert-glass-card" id="upcomingEventsContainer">
+          <div class="card-label"><i class="fas fa-calendar-alt"></i> Upcoming Weather Events</div>
+          <div class="event-grid" id="popupEvents">
+            <!-- populated by JS -->
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="alert-actions">
+          <button class="btn-primary" onclick="document.getElementById('alertOverlay').classList.remove('active')">
+            <i class="fas fa-check"></i> Understood
+          </button>
+          <button class="btn-secondary" onclick="document.getElementById('alertOverlay').classList.remove('active')">
+            <i class="fas fa-times"></i> Dismiss
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -605,6 +713,7 @@
       }
     }
 
+    // ===== PREMIUM REDESIGNED POPUP =====
     function showSmartAlert(data, forecastData) {
       const main = data.main, wind = data.wind, weather = data.weather[0];
       const rain = data.rain ? data.rain['1h'] || data.rain['3h'] || 0 : 0;
@@ -620,40 +729,65 @@
       let title = 'Weather Update';
       let subtitle = 'Current conditions are stable.';
       let severity = 'Low';
-      let severityColor = '#2ed573';
-      let safetyInstructions = [];
+      let severityClass = 'severity-low';
+      let alertTheme = '';
+      let safetyItems = [];
       let upcomingEvents = [];
       
+      // Determine alert type
       if (temp > 35) {
         icon = '☀️🔥';
         title = 'Extreme Heat Warning';
         subtitle = `Temperature reaching ${Math.round(temp)}°C. High risk of heat stroke.`;
-        severity = 'High';
-        severityColor = '#ff4757';
-        safetyInstructions = ['💧 Drink water frequently, even if not thirsty','🧢 Avoid outdoor activity during peak heat (11am-4pm)','👕 Wear light-colored, loose-fitting clothing','🧴 Use sunscreen with SPF 30+','👶 Monitor children, elderly, and pets for signs of heat stress'];
+        severity = 'Extreme';
+        severityClass = 'severity-high';
+        alertTheme = 'alert-heat';
+        safetyItems = [
+          { icon: '💧', text: 'Drink water frequently, even if not thirsty', priority: 'high' },
+          { icon: '🧢', text: 'Avoid outdoor activity during peak heat (11am-4pm)', priority: 'high' },
+          { icon: '👕', text: 'Wear light-colored, loose-fitting clothing', priority: 'moderate' },
+          { icon: '🧴', text: 'Use sunscreen with SPF 30+', priority: 'moderate' },
+          { icon: '👶', text: 'Monitor children, elderly, and pets for heat stress', priority: 'high' }
+        ];
       } else if (temp > 30) {
         icon = '☀️';
         title = 'Heat Advisory';
         subtitle = `Temperature ${Math.round(temp)}°C. Stay hydrated.`;
         severity = 'Moderate';
-        severityColor = '#ffa502';
-        safetyInstructions = ['💧 Drink water regularly','🧢 Limit sun exposure during midday','👕 Wear light clothing'];
+        severityClass = 'severity-moderate';
+        alertTheme = 'alert-heat';
+        safetyItems = [
+          { icon: '💧', text: 'Drink water regularly', priority: 'moderate' },
+          { icon: '🧢', text: 'Limit sun exposure during midday', priority: 'moderate' },
+          { icon: '👕', text: 'Wear light clothing', priority: 'low' }
+        ];
       }
       
       if (cat.includes('Heavy Rain') || cat.includes('Very Heavy Rain') || cat.includes('Thunderstorm')) {
         icon = '🌧️⛈️';
         title = 'Heavy Rain / Thunderstorm Warning';
         subtitle = `${cat} expected. ${Math.round(prob)}% probability, ${intensity.toFixed(1)} mm.`;
-        severity = 'High';
-        severityColor = '#ff4757';
-        safetyInstructions = ['☔ Carry an umbrella and wear waterproof clothing','🚗 Avoid flooded roads. Never drive through standing water','⚡ Stay indoors. Avoid isolated trees and open fields','📱 Protect electronic devices from power surges','🌊 Stay away from rivers and low-lying areas'];
+        severity = 'Extreme';
+        severityClass = 'severity-high';
+        alertTheme = 'alert-rain';
+        safetyItems = [
+          { icon: '☔', text: 'Carry an umbrella and wear waterproof clothing', priority: 'high' },
+          { icon: '🚗', text: 'Avoid flooded roads. Never drive through standing water', priority: 'high' },
+          { icon: '⚡', text: 'Stay indoors. Avoid isolated trees and open fields', priority: 'high' },
+          { icon: '📱', text: 'Protect electronic devices from power surges', priority: 'moderate' },
+          { icon: '🌊', text: 'Stay away from rivers and low-lying areas', priority: 'high' }
+        ];
       } else if (cat.includes('Moderate Rain') || cat.includes('Light Rain')) {
         icon = '🌧️';
         title = 'Rain Expected';
         subtitle = `${cat} with ${Math.round(prob)}% probability.`;
         severity = 'Moderate';
-        severityColor = '#ffa502';
-        safetyInstructions = ['☔ Carry an umbrella','🚗 Roads may be slippery, drive with caution'];
+        severityClass = 'severity-moderate';
+        alertTheme = 'alert-rain';
+        safetyItems = [
+          { icon: '☔', text: 'Carry an umbrella', priority: 'moderate' },
+          { icon: '🚗', text: 'Roads may be slippery, drive with caution', priority: 'moderate' }
+        ];
       }
       
       if (windSpeed > 12) {
@@ -661,8 +795,13 @@
         title = 'Strong Wind Alert';
         subtitle = `Wind speed ${windSpeed} m/s. Secure loose objects.`;
         severity = 'High';
-        severityColor = '#ff4757';
-        safetyInstructions = ['🔒 Secure outdoor furniture and loose objects','🚗 Drive with caution, especially high-profile vehicles','🌳 Avoid standing near unstable trees or structures'];
+        severityClass = 'severity-high';
+        alertTheme = 'alert-wind';
+        safetyItems = [
+          { icon: '🔒', text: 'Secure outdoor furniture and loose objects', priority: 'high' },
+          { icon: '🚗', text: 'Drive with caution, especially high-profile vehicles', priority: 'moderate' },
+          { icon: '🌳', text: 'Avoid standing near unstable trees or structures', priority: 'moderate' }
+        ];
       }
       
       if (data.visibility && data.visibility < 1000) {
@@ -670,28 +809,44 @@
         title = 'Dense Fog Warning';
         subtitle = `Visibility ${(data.visibility/1000).toFixed(1)} km. Drive carefully.`;
         severity = 'High';
-        severityColor = '#ff4757';
-        safetyInstructions = ['🚗 Use low-beam headlights, not high beams','🐢 Reduce speed and maintain safe following distance','🚫 Avoid sudden braking'];
+        severityClass = 'severity-high';
+        alertTheme = 'alert-fog';
+        safetyItems = [
+          { icon: '🚗', text: 'Use low-beam headlights, not high beams', priority: 'high' },
+          { icon: '🐢', text: 'Reduce speed and maintain safe following distance', priority: 'high' },
+          { icon: '🚫', text: 'Avoid sudden braking', priority: 'moderate' }
+        ];
       }
       
-      if (humidity > 80 && temp > 25) {
+      if (humidity > 80 && temp > 25 && alertTheme === '') {
         icon = '💧';
         title = 'High Humidity Alert';
         subtitle = `Humidity ${humidity}%. Feels uncomfortable.`;
         severity = 'Moderate';
-        severityColor = '#ffa502';
-        safetyInstructions = ['🌬️ Use ventilation or air conditioning','💧 Stay hydrated','🧘 Avoid strenuous outdoor activities'];
+        severityClass = 'severity-moderate';
+        alertTheme = 'alert-rain';
+        safetyItems = [
+          { icon: '🌬️', text: 'Use ventilation or air conditioning', priority: 'moderate' },
+          { icon: '💧', text: 'Stay hydrated', priority: 'moderate' },
+          { icon: '🧘', text: 'Avoid strenuous outdoor activities', priority: 'low' }
+        ];
       }
       
-      if (icon === '🌤️') {
+      // Default if no alerts
+      if (alertTheme === '') {
         icon = '✅';
         title = 'Clear Weather Conditions';
         subtitle = `${weather.description}. Temperature ${Math.round(temp)}°C.`;
         severity = 'Low';
-        severityColor = '#2ed573';
-        safetyInstructions = ['✅ Enjoy outdoor activities','🌤️ Stay aware of changing weather conditions'];
+        severityClass = 'severity-low';
+        alertTheme = '';
+        safetyItems = [
+          { icon: '✅', text: 'Enjoy outdoor activities', priority: 'low' },
+          { icon: '🌤️', text: 'Stay aware of changing weather conditions', priority: 'low' }
+        ];
       }
-      
+
+      // Build upcoming events
       if (forecastData && forecastData.list) {
         const list = forecastData.list.slice(0, 16);
         list.forEach((item, idx) => {
@@ -705,57 +860,88 @@
           const itemCat = rainCategory(itemProb, itemRain || (Math.random()*2));
           
           if (itemProb > 60 && idx % 4 === 0) {
-            upcomingEvents.push({ time: `${dayName} ${timeStr}`, title: `${itemCat}`, detail: `Probability: ${Math.round(itemProb)}% | ${itemRain ? itemRain.toFixed(1) : (Math.random()*3).toFixed(1)} mm`, icon: itemCat.includes('Heavy') || itemCat.includes('Thunder') ? '⛈️' : '🌧️' });
+            upcomingEvents.push({ 
+              time: `${dayName} ${timeStr}`, 
+              title: `${itemCat}`, 
+              detail: `${Math.round(itemProb)}% · ${itemRain ? itemRain.toFixed(1) : (Math.random()*3).toFixed(1)} mm`, 
+              icon: itemCat.includes('Heavy') || itemCat.includes('Thunder') ? '⛈️' : '🌧️',
+              color: '#74b9ff'
+            });
           } else if (itemTemp > 32 && idx % 4 === 0) {
-            upcomingEvents.push({ time: `${dayName} ${timeStr}`, title: `Extreme Heat ${Math.round(itemTemp)}°C`, detail: `Heat Risk: High`, icon: '☀️🔥' });
+            upcomingEvents.push({ 
+              time: `${dayName} ${timeStr}`, 
+              title: `Heat ${Math.round(itemTemp)}°C`, 
+              detail: `Heat Risk: High`, 
+              icon: '☀️🔥',
+              color: '#ff6b6b'
+            });
           } else if (itemWind > 12 && idx % 4 === 0) {
-            upcomingEvents.push({ time: `${dayName} ${timeStr}`, title: `Strong Wind ${itemWind.toFixed(1)} m/s`, detail: `Secure loose objects`, icon: '💨' });
+            upcomingEvents.push({ 
+              time: `${dayName} ${timeStr}`, 
+              title: `Strong Wind ${itemWind.toFixed(1)} m/s`, 
+              detail: `Secure loose objects`, 
+              icon: '💨',
+              color: '#55efc4'
+            });
           }
         });
         upcomingEvents = upcomingEvents.slice(0, 4);
       }
-      
-      const popupHTML = `
-        <div class="alert-icon">${icon}</div>
-        <div class="alert-title">${title}</div>
-        <div class="alert-subtitle">${subtitle}</div>
-        <div class="alert-detail-grid">
-          <div class="item"><span class="label">📍 Location</span><span class="value">${cityName}</span></div>
-          <div class="item"><span class="label">⚠️ Severity</span><span class="value" style="color:${severityColor};font-weight:600;">${severity}</span></div>
-          <div class="item"><span class="label">🌡 Temperature</span><span class="value" style="color:#ff6b6b;">${Math.round(temp)}°C</span></div>
-          <div class="item"><span class="label">💧 Humidity</span><span class="value" style="color:#81ecec;">${humidity}%</span></div>
-          <div class="item"><span class="label">🌬 Wind</span><span class="value" style="color:#55efc4;">${windSpeed} m/s ${degToDirection(wind.deg || 0)}</span></div>
-          <div class="item"><span class="label">🌧 Rain Prob</span><span class="value" style="color:#74b9ff;">${Math.round(prob)}%</span></div>
-        </div>
-        <div class="safety-section">
-          <div class="safety-title"><i class="fas fa-shield-alt"></i> Safety Recommendations</div>
-          <ul>${safetyInstructions.map(s => `<li>${s}</li>`).join('')}</ul>
-        </div>
-        ${upcomingEvents.length > 0 ? `
-        <div class="upcoming-events">
-          <div style="font-weight:600; font-size:0.85rem; margin-bottom:6px; opacity:0.7;">📅 Upcoming Weather Events</div>
-          ${upcomingEvents.map(e => `
-            <div class="event-card">
-              <span class="e-icon">${e.icon}</span>
-              <div class="e-info">
-                <div class="e-title">${e.title}</div>
-                <div class="e-detail">${e.time} · ${e.detail}</div>
-              </div>
-            </div>
-          `).join('')}
-        </div>
-        ` : ''}
-        <div class="action-buttons">
-          <button class="primary" onclick="document.getElementById('alertOverlay').classList.remove('active')"><i class="fas fa-check"></i> Understood</button>
-          <button onclick="document.getElementById('alertOverlay').classList.remove('active')"><i class="fas fa-times"></i> Dismiss</button>
-        </div>
+
+      // Populate popup
+      document.getElementById('popupIcon').textContent = icon;
+      document.getElementById('popupTitle').textContent = title;
+      document.getElementById('popupSubtitle').textContent = subtitle;
+      document.getElementById('popupLocation').textContent = `📍 ${cityName}`;
+      document.getElementById('popupSeverity').textContent = severity;
+      document.getElementById('popupSeverity').className = `severity-badge ${severityClass}`;
+
+      // Details
+      const detailsHtml = `
+        <div class="item"><span class="label">🌡 Temperature</span><span class="value" style="color:#ff6b6b;">${Math.round(temp)}°C</span></div>
+        <div class="item"><span class="label">💧 Humidity</span><span class="value" style="color:#81ecec;">${humidity}%</span></div>
+        <div class="item"><span class="label">🌬 Wind</span><span class="value" style="color:#55efc4;">${windSpeed} m/s ${degToDirection(wind.deg || 0)}</span></div>
+        <div class="item"><span class="label">🌧 Rain Prob</span><span class="value" style="color:#74b9ff;">${Math.round(prob)}%</span></div>
+        <div class="item"><span class="label">📊 Pressure</span><span class="value" style="color:#a29bfe;">${main.pressure} hPa</span></div>
+        <div class="item"><span class="label">👁️ Visibility</span><span class="value">${data.visibility ? (data.visibility/1000).toFixed(1) : '--'} km</span></div>
       `;
-      
-      document.getElementById('alertContentInner').innerHTML = popupHTML;
+      document.getElementById('popupDetails').innerHTML = detailsHtml;
+
+      // Safety
+      const safetyHtml = safetyItems.map(s => `
+        <div class="safety-card">
+          <div><span class="safety-icon">${s.icon}</span> <span class="safety-text">${s.text}</span></div>
+          <span class="safety-priority priority-${s.priority}">${s.priority}</span>
+        </div>
+      `).join('');
+      document.getElementById('popupSafety').innerHTML = safetyHtml;
+
+      // Events
+      const eventsContainer = document.getElementById('upcomingEventsContainer');
+      if (upcomingEvents.length > 0) {
+        const eventsHtml = upcomingEvents.map(e => `
+          <div class="event-card-popup" style="border-left-color: ${e.color};">
+            <span class="e-icon">${e.icon}</span>
+            <div class="e-info">
+              <div class="e-title">${e.title}</div>
+              <div class="e-detail">${e.time} · ${e.detail}</div>
+            </div>
+          </div>
+        `).join('');
+        document.getElementById('popupEvents').innerHTML = eventsHtml;
+        eventsContainer.style.display = 'block';
+      } else {
+        eventsContainer.style.display = 'none';
+      }
+
+      // Apply theme
       const popup = document.getElementById('alertPopup');
       popup.className = 'alert-popup';
+      if (alertTheme) popup.classList.add(alertTheme);
       const themeClass = document.body.className.split(' ').find(c => c.startsWith('theme-'));
       if (themeClass) popup.classList.add(themeClass);
+
+      // Show
       alertOverlay.classList.add('active');
     }
 
