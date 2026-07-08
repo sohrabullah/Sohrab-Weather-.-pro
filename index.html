@@ -18,7 +18,7 @@
       transition: background 1.2s ease;
       display: flex; align-items: center; justify-content: center; overflow-x: hidden;
     }
-    /* FIXED: Always elegant dark green/blue background */
+    /* DEFAULT: Always elegant dark green/blue background - FIRST THEME */
     .weather-bg {
       position: fixed; inset: 0; z-index: 0; 
       background: radial-gradient(ellipse at 20% 50%, rgba(40,100,160,0.08), transparent 60%),
@@ -191,7 +191,7 @@
     .map-controls button:hover { background: rgba(255,255,255,0.06); transform: scale(1.04); }
     .map-controls button.active { background: linear-gradient(135deg, #4a90b8, #2c6f9e); border-color: #4a90b8; color: white; }
 
-    /* PREMIUM ALERT POPUP - always elegant */
+    /* PREMIUM ALERT POPUP - DEFAULT FIRST THEME (Dark Green/Blue) */
     .alert-overlay {
       position: fixed; inset: 0; z-index: 1000;
       background: rgba(0,0,0,0.5); backdrop-filter: blur(8px);
@@ -207,7 +207,7 @@
       position: relative;
       box-shadow: 0 40px 100px rgba(0,0,0,0.6);
       animation: popupIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-      background: linear-gradient(145deg, rgba(20,40,60,0.85), rgba(10,25,40,0.8));
+      background: linear-gradient(145deg, rgba(20,40,60,0.85), rgba(10,25,40,0.8)) !important;
       backdrop-filter: blur(24px);
       border: 1px solid rgba(255,255,255,0.06);
       overflow: hidden;
@@ -355,7 +355,7 @@
     }
     .alert-actions .btn-secondary:hover { background: rgba(255,255,255,0.06); }
 
-    /* Weather-specific header themes - subtle variations on the same elegant palette */
+    /* Weather-specific header themes - subtle variations on dark palette */
     .alert-rain .alert-header { background: linear-gradient(135deg, #0a2a4a, #0a1a3a, #0a2a4a) !important; background-size: 300% 300% !important; animation: headerGradient 8s ease infinite; }
     .alert-storm .alert-header { background: linear-gradient(135deg, #1a0a3a, #0a0a2a, #1a0a3a) !important; background-size: 300% 300% !important; animation: headerGradient 8s ease infinite; }
     .alert-heat .alert-header { background: linear-gradient(135deg, #3a2a1a, #2a1a0a, #3a2a1a) !important; background-size: 300% 300% !important; animation: headerGradient 8s ease infinite; }
@@ -363,6 +363,7 @@
     .alert-fog .alert-header { background: linear-gradient(135deg, #1a2a3a, #0a1a2a, #1a2a3a) !important; background-size: 300% 300% !important; animation: headerGradient 8s ease infinite; }
     .alert-wind .alert-header { background: linear-gradient(135deg, #1a3a2a, #0a2a1a, #1a3a2a) !important; background-size: 300% 300% !important; animation: headerGradient 8s ease infinite; }
 
+    /* SECOND THEME: Light Mode - only when user toggles */
     body.light-mode .app-container { background: rgba(255,255,255,0.2); backdrop-filter: blur(28px); border: 1px solid rgba(255,255,255,0.3); }
     body.light-mode .glass-card { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); }
     body.light-mode .search-box input { color: #1a2a3a; }
@@ -380,7 +381,7 @@
     body.light-mode .insight-item .insight-title { color: #1a4a6a; }
     body.light-mode .insight-item .insight-reason { color: #2a3a4a; }
     body.light-mode .insight-item .insight-instruction { color: #1a4a3a; background: rgba(0,0,0,0.03); }
-    body.light-mode .alert-popup { background: rgba(255,255,255,0.6); backdrop-filter: blur(24px); border: 1px solid rgba(255,255,255,0.3); }
+    body.light-mode .alert-popup { background: rgba(255,255,255,0.6) !important; backdrop-filter: blur(24px); border: 1px solid rgba(255,255,255,0.3); }
     body.light-mode .alert-glass-card { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.1); }
     body.light-mode .alert-detail-grid .item { color: #1a2a3a; }
     body.light-mode .safety-card { background: rgba(0,0,0,0.02); }
@@ -613,6 +614,7 @@
     let recentCities = JSON.parse(localStorage.getItem('recentCities') || '[]');
     let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
     let map, mapLayer;
+    let isLightMode = false;
 
     function degToDirection(deg) {
       const dirs = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
@@ -636,11 +638,9 @@
       return 'Thunderstorm Possible';
     }
 
-    // FIXED: Always keep the elegant background
+    // ALWAYS keep the elegant dark background - FIRST THEME
     function setDynamicBg(weatherId, isDay) {
-      // Background stays the same - elegant dark green/blue
       bgEl.style.background = 'radial-gradient(ellipse at 20% 50%, rgba(40,100,160,0.08), transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(30,80,120,0.05), transparent 50%), linear-gradient(145deg, #0d1f2d, #1a2f3f)';
-      // Only apply theme class for card styling
       let bgClass = '';
       if (weatherId >= 200 && weatherId < 300) bgClass = 'storm';
       else if (weatherId >= 300 && weatherId < 600) bgClass = 'rain';
@@ -923,6 +923,11 @@
       if (alertTheme) popup.classList.add(alertTheme);
       const themeClass = document.body.className.split(' ').find(c => c.startsWith('theme-'));
       if (themeClass) popup.classList.add(themeClass);
+      
+      // Ensure dark theme is applied by default (first theme)
+      if (!document.body.classList.contains('light-mode')) {
+        popup.style.background = 'linear-gradient(145deg, rgba(20,40,60,0.85), rgba(10,25,40,0.8)) !important';
+      }
 
       alertOverlay.classList.add('active');
     }
@@ -985,9 +990,7 @@
         if (forecastData) fetchForecast(city);
         generateInsights(data);
         updateMap(data.coord.lat, data.coord.lon);
-        const isDay = data.weather[0].icon.includes('d');
-        document.body.classList.toggle('light-mode', !isDay);
-        themeToggle.innerHTML = isDay ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+        // Do NOT auto-switch theme - keep dark as default
         setTimeout(() => { showSmartAlert(data, forecastData); }, 800);
       } catch (e) { console.warn(e); document.getElementById('cityCountry').innerText = 'Network error'; }
     }
@@ -1125,9 +1128,19 @@
     favBtn.addEventListener('click', () => {
       if (currentCity && !favorites.includes(currentCity)) { favorites.push(currentCity); localStorage.setItem('favorites', JSON.stringify(favorites)); renderRecentFav(); }
     });
+    
+    // Manual theme toggle - SECOND THEME (Light mode)
     themeToggle.addEventListener('click', () => {
       document.body.classList.toggle('light-mode');
-      themeToggle.innerHTML = document.body.classList.contains('light-mode') ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+      const isLight = document.body.classList.contains('light-mode');
+      themeToggle.innerHTML = isLight ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+      // Update popup background
+      const popup = document.getElementById('alertPopup');
+      if (isLight) {
+        popup.style.background = 'rgba(255,255,255,0.6) !important';
+      } else {
+        popup.style.background = 'linear-gradient(145deg, rgba(20,40,60,0.85), rgba(10,25,40,0.8)) !important';
+      }
     });
 
     renderRecentFav();
