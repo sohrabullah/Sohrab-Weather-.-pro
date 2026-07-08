@@ -18,12 +18,13 @@
       transition: background 1.2s ease;
       display: flex; align-items: center; justify-content: center; overflow-x: hidden;
     }
+    /* FIXED: Always elegant dark green/blue background */
     .weather-bg {
       position: fixed; inset: 0; z-index: 0; 
-      background: radial-gradient(ellipse at 20% 50%, rgba(40,100,160,0.12), transparent 60%),
-                  radial-gradient(ellipse at 80% 20%, rgba(30,80,120,0.08), transparent 50%),
-                  linear-gradient(145deg, #0d1f2d, #1a2f3f);
-      transition: background 1.2s ease;
+      background: radial-gradient(ellipse at 20% 50%, rgba(40,100,160,0.08), transparent 60%),
+                  radial-gradient(ellipse at 80% 20%, rgba(30,80,120,0.05), transparent 50%),
+                  linear-gradient(145deg, #0d1f2d, #1a2f3f) !important;
+      transition: none;
     }
     .app-container {
       position: relative; z-index: 2; max-width: 1600px; width: 100%;
@@ -190,7 +191,7 @@
     .map-controls button:hover { background: rgba(255,255,255,0.06); transform: scale(1.04); }
     .map-controls button.active { background: linear-gradient(135deg, #4a90b8, #2c6f9e); border-color: #4a90b8; color: white; }
 
-    /* PREMIUM ALERT POPUP - dark green/blue theme */
+    /* PREMIUM ALERT POPUP - always elegant */
     .alert-overlay {
       position: fixed; inset: 0; z-index: 1000;
       background: rgba(0,0,0,0.5); backdrop-filter: blur(8px);
@@ -206,7 +207,7 @@
       position: relative;
       box-shadow: 0 40px 100px rgba(0,0,0,0.6);
       animation: popupIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-      background: linear-gradient(145deg, rgba(30,50,70,0.7), rgba(15,30,45,0.6));
+      background: linear-gradient(145deg, rgba(20,40,60,0.85), rgba(10,25,40,0.8));
       backdrop-filter: blur(24px);
       border: 1px solid rgba(255,255,255,0.06);
       overflow: hidden;
@@ -223,8 +224,8 @@
       position: relative;
       overflow: hidden;
       border-radius: 48px 48px 0 0;
-      background: linear-gradient(135deg, #1a3a4a, #0d2a3a, #1a3a4a);
-      background-size: 300% 300%;
+      background: linear-gradient(135deg, #1a3a4a, #0d2a3a, #1a3a4a) !important;
+      background-size: 300% 300% !important;
       animation: headerGradient 8s ease infinite;
       color: #e8f0f5;
       border-bottom: 1px solid rgba(255,255,255,0.04);
@@ -232,7 +233,7 @@
     @keyframes headerGradient { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
     .alert-header::after {
       content: ''; position: absolute; inset: 0;
-      background: radial-gradient(circle at 20% 30%, rgba(74,144,184,0.08), transparent 60%);
+      background: radial-gradient(circle at 20% 30%, rgba(74,144,184,0.06), transparent 60%);
       pointer-events: none;
     }
     .alert-header .header-row {
@@ -252,14 +253,14 @@
       border: 1px solid rgba(255,255,255,0.06);
       margin-top: 6px;
     }
-    .severity-high { background: linear-gradient(135deg, #8a3a3a, #6a2a2a) !important; color: #e8b0b0; }
-    .severity-moderate { background: linear-gradient(135deg, #8a7a2a, #6a5a1a) !important; color: #e8d0a0; }
-    .severity-low { background: linear-gradient(135deg, #2a6a4a, #1a4a3a) !important; color: #a0d0b0; }
+    .severity-high { background: linear-gradient(135deg, #6a3a3a, #4a2a2a) !important; color: #e8b0b0; }
+    .severity-moderate { background: linear-gradient(135deg, #6a5a2a, #4a3a1a) !important; color: #e8d0a0; }
+    .severity-low { background: linear-gradient(135deg, #2a5a3a, #1a3a2a) !important; color: #a0d0b0; }
 
     .alert-close-btn {
       position: absolute; top: 16px; right: 16px; z-index: 10;
       width: 48px; height: 48px; border-radius: 50%;
-      background: linear-gradient(135deg, #6a3a3a, #4a2a2a);
+      background: linear-gradient(135deg, #5a3a3a, #3a2a2a);
       border: 1px solid rgba(255,255,255,0.06);
       color: #e8b0b0; font-size: 1.4rem;
       cursor: pointer; transition: 0.3s;
@@ -315,9 +316,9 @@
       display: inline-block; font-size: 0.55rem; font-weight: 700; text-transform: uppercase;
       padding: 1px 10px; border-radius: 20px; margin-top: 4px;
     }
-    .priority-high { background: #6a3a3a; color: #e8b0b0; }
-    .priority-moderate { background: #6a5a2a; color: #e8d0a0; }
-    .priority-low { background: #2a5a3a; color: #a0d0b0; }
+    .priority-high { background: #5a3a3a; color: #e8b0b0; }
+    .priority-moderate { background: #5a4a2a; color: #e8d0a0; }
+    .priority-low { background: #2a4a3a; color: #a0d0b0; }
 
     .event-grid {
       display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
@@ -354,12 +355,13 @@
     }
     .alert-actions .btn-secondary:hover { background: rgba(255,255,255,0.06); }
 
-    .alert-rain .alert-header { background: linear-gradient(135deg, #0a2a4a, #0a1a3a, #0a2a4a); background-size: 300% 300%; animation: headerGradient 8s ease infinite; }
-    .alert-storm .alert-header { background: linear-gradient(135deg, #1a0a3a, #0a0a2a, #1a0a3a); background-size: 300% 300%; animation: headerGradient 8s ease infinite; }
-    .alert-heat .alert-header { background: linear-gradient(135deg, #4a2a1a, #3a1a0a, #4a2a1a); background-size: 300% 300%; animation: headerGradient 8s ease infinite; }
-    .alert-snow .alert-header { background: linear-gradient(135deg, #2a4a5a, #1a3a4a, #2a4a5a); background-size: 300% 300%; animation: headerGradient 8s ease infinite; }
-    .alert-fog .alert-header { background: linear-gradient(135deg, #2a3a4a, #1a2a3a, #2a3a4a); background-size: 300% 300%; animation: headerGradient 8s ease infinite; }
-    .alert-wind .alert-header { background: linear-gradient(135deg, #1a4a3a, #0a3a2a, #1a4a3a); background-size: 300% 300%; animation: headerGradient 8s ease infinite; }
+    /* Weather-specific header themes - subtle variations on the same elegant palette */
+    .alert-rain .alert-header { background: linear-gradient(135deg, #0a2a4a, #0a1a3a, #0a2a4a) !important; background-size: 300% 300% !important; animation: headerGradient 8s ease infinite; }
+    .alert-storm .alert-header { background: linear-gradient(135deg, #1a0a3a, #0a0a2a, #1a0a3a) !important; background-size: 300% 300% !important; animation: headerGradient 8s ease infinite; }
+    .alert-heat .alert-header { background: linear-gradient(135deg, #3a2a1a, #2a1a0a, #3a2a1a) !important; background-size: 300% 300% !important; animation: headerGradient 8s ease infinite; }
+    .alert-snow .alert-header { background: linear-gradient(135deg, #1a3a4a, #0a2a3a, #1a3a4a) !important; background-size: 300% 300% !important; animation: headerGradient 8s ease infinite; }
+    .alert-fog .alert-header { background: linear-gradient(135deg, #1a2a3a, #0a1a2a, #1a2a3a) !important; background-size: 300% 300% !important; animation: headerGradient 8s ease infinite; }
+    .alert-wind .alert-header { background: linear-gradient(135deg, #1a3a2a, #0a2a1a, #1a3a2a) !important; background-size: 300% 300% !important; animation: headerGradient 8s ease infinite; }
 
     body.light-mode .app-container { background: rgba(255,255,255,0.2); backdrop-filter: blur(28px); border: 1px solid rgba(255,255,255,0.3); }
     body.light-mode .glass-card { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); }
@@ -388,7 +390,7 @@
     body.light-mode .alert-glass-card .card-label { color: rgba(0,0,0,0.3); }
     body.light-mode .alert-actions .btn-secondary { color: #1a2a3a; background: rgba(0,0,0,0.03); }
     body.light-mode .alert-actions .btn-secondary:hover { background: rgba(0,0,0,0.06); }
-    body.light-mode .alert-header { background: linear-gradient(135deg, #2a5a7a, #1a3a5a); }
+    body.light-mode .alert-header { background: linear-gradient(135deg, #2a5a7a, #1a3a5a) !important; }
     body.light-mode .alert-header .alert-title { color: #1a2a3a; }
     body.light-mode .alert-header .alert-subtitle { color: #2a3a4a; }
     body.light-mode .alert-header .alert-location { color: #3a4a5a; }
@@ -634,7 +636,11 @@
       return 'Thunderstorm Possible';
     }
 
+    // FIXED: Always keep the elegant background
     function setDynamicBg(weatherId, isDay) {
+      // Background stays the same - elegant dark green/blue
+      bgEl.style.background = 'radial-gradient(ellipse at 20% 50%, rgba(40,100,160,0.08), transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(30,80,120,0.05), transparent 50%), linear-gradient(145deg, #0d1f2d, #1a2f3f)';
+      // Only apply theme class for card styling
       let bgClass = '';
       if (weatherId >= 200 && weatherId < 300) bgClass = 'storm';
       else if (weatherId >= 300 && weatherId < 600) bgClass = 'rain';
@@ -644,16 +650,6 @@
       else if (weatherId === 801 || weatherId === 802) bgClass = isDay ? 'cloudy' : 'night';
       else bgClass = isDay ? 'cloudy' : 'night';
       
-      const bgMap = {
-        sunny: 'radial-gradient(ellipse at 20% 50%, rgba(74,144,184,0.12), transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(74,144,184,0.06), transparent 50%), linear-gradient(145deg, #0d1f2d, #1a2f3f)',
-        night: 'radial-gradient(ellipse at 20% 50%, rgba(40,60,100,0.15), transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(30,40,80,0.1), transparent 50%), linear-gradient(145deg, #0a1520, #152a3a)',
-        cloudy: 'radial-gradient(ellipse at 20% 50%, rgba(60,80,100,0.1), transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(40,60,80,0.06), transparent 50%), linear-gradient(145deg, #0d1f2d, #1a2f3f)',
-        rain: 'radial-gradient(ellipse at 20% 50%, rgba(30,80,130,0.15), transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(20,60,100,0.1), transparent 50%), linear-gradient(145deg, #0a1a2a, #152a3a)',
-        storm: 'radial-gradient(ellipse at 20% 50%, rgba(60,30,100,0.12), transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(40,20,80,0.08), transparent 50%), linear-gradient(145deg, #0a0a1a, #1a0a2a)',
-        snow: 'radial-gradient(ellipse at 20% 50%, rgba(100,130,160,0.1), transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(80,110,140,0.06), transparent 50%), linear-gradient(145deg, #1a2a3a, #2a3a4a)',
-        fog: 'radial-gradient(ellipse at 20% 50%, rgba(80,100,120,0.08), transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(60,80,100,0.05), transparent 50%), linear-gradient(145deg, #1a2a3a, #2a3a4a)',
-      };
-      bgEl.style.background = bgMap[bgClass] || bgMap.cloudy;
       document.body.className = document.body.className.replace(/theme-\w+/g, '');
       document.body.classList.add('theme-' + bgClass);
       return bgClass;
