@@ -703,31 +703,10 @@
     function showSmartAlert(data, forecastData) {
       const main = data.main, wind = data.wind, weather = data.weather[0];
       
-      // REAL DATA - no random values
+      // REAL DATA - No random values
       const rain = data.rain ? data.rain['1h'] || data.rain['3h'] || 0 : 0;
-      // Use real rain probability from API if available, otherwise calculate from conditions
-      let prob = 0;
-      if (rain > 0) {
-        // If rain data exists, probability is high
-        prob = Math.min(85 + (rain * 5), 98);
-      } else if (weather.id >= 300 && weather.id < 600) {
-        // Drizzle or rain weather codes
-        prob = 60 + (weather.id % 10) * 3;
-      } else if (weather.id >= 200 && weather.id < 300) {
-        // Thunderstorm
-        prob = 85 + (weather.id % 10) * 1.5;
-      } else if (weather.id === 801 || weather.id === 802) {
-        // Few/Scattered clouds - low rain chance
-        prob = 10 + Math.random() * 15;
-      } else if (weather.id === 803 || weather.id === 804) {
-        // Broken/Overcast clouds - moderate rain chance
-        prob = 25 + Math.random() * 25;
-      } else {
-        // Clear or other - very low chance
-        prob = Math.random() * 10;
-      }
-      prob = Math.min(Math.max(prob, 0), 99);
-      
+      // Rain probability from API - if rain exists, probability is high, otherwise 0
+      const prob = rain > 0 ? Math.min(85 + rain * 5, 99) : 0;
       const intensity = rain || 0;
       const cat = rainCategory(prob, intensity);
       const temp = main.temp;
@@ -828,7 +807,7 @@
         ];
       }
       
-      if (humidity > 80 && temp > 25 && alertTheme === '' && prob < 30) {
+      if (humidity > 80 && temp > 25 && alertTheme === '' && prob < 10) {
         icon = '💧';
         title = 'High Humidity Alert';
         subtitle = `Humidity ${humidity}%. Feels uncomfortable.`;
@@ -856,7 +835,7 @@
         ];
       }
 
-      // Build upcoming events from REAL forecast data
+      // Build upcoming events from REAL forecast data - no random values
       if (forecastData && forecastData.list) {
         const list = forecastData.list.slice(0, 16);
         list.forEach((item, idx) => {
@@ -864,18 +843,7 @@
           const dayName = dt.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
           const timeStr = dt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
           const itemRain = item.rain ? item.rain['3h'] || 0 : 0;
-          // Use real rain data from forecast
-          let itemProb = 0;
-          if (itemRain > 0) {
-            itemProb = Math.min(70 + (itemRain * 8), 98);
-          } else if (item.weather[0].id >= 300 && item.weather[0].id < 600) {
-            itemProb = 50 + (item.weather[0].id % 10) * 4;
-          } else if (item.weather[0].id >= 200 && item.weather[0].id < 300) {
-            itemProb = 80 + (item.weather[0].id % 10) * 1.8;
-          } else {
-            itemProb = Math.random() * 15;
-          }
-          itemProb = Math.min(Math.max(itemProb, 0), 99);
+          const itemProb = itemRain > 0 ? Math.min(70 + itemRain * 8, 99) : 0;
           const itemTemp = item.main.temp;
           const itemWind = item.wind.speed;
           const itemCat = rainCategory(itemProb, itemRain);
@@ -884,7 +852,7 @@
             upcomingEvents.push({ 
               time: `${dayName} ${timeStr}`, 
               title: `${itemCat}`, 
-              detail: `${Math.round(itemProb)}% · ${itemRain ? itemRain.toFixed(1) : (Math.random()*2).toFixed(1)} mm`, 
+              detail: `${Math.round(itemProb)}% · ${itemRain.toFixed(1)} mm`, 
               icon: itemCat.includes('Heavy') || itemCat.includes('Thunder') ? '⛈️' : '🌧️',
               color: '#6ab0e6'
             });
@@ -963,21 +931,7 @@
     function generateInsights(data) {
       const main = data.main, wind = data.wind, weather = data.weather[0], clouds = data.clouds ? data.clouds.all : 0;
       const rain = data.rain ? data.rain['1h'] || data.rain['3h'] || 0 : 0;
-      let prob = 0;
-      if (rain > 0) {
-        prob = Math.min(85 + (rain * 5), 98);
-      } else if (weather.id >= 300 && weather.id < 600) {
-        prob = 60 + (weather.id % 10) * 3;
-      } else if (weather.id >= 200 && weather.id < 300) {
-        prob = 85 + (weather.id % 10) * 1.5;
-      } else if (weather.id === 801 || weather.id === 802) {
-        prob = 10 + Math.random() * 15;
-      } else if (weather.id === 803 || weather.id === 804) {
-        prob = 25 + Math.random() * 25;
-      } else {
-        prob = Math.random() * 10;
-      }
-      prob = Math.min(Math.max(prob, 0), 99);
+      const prob = rain > 0 ? Math.min(85 + rain * 5, 99) : 0;
       const intensity = rain || 0;
       const cat = rainCategory(prob, intensity);
       const temp = main.temp, humidity = main.humidity, windSpeed = wind.speed;
@@ -1053,23 +1007,9 @@
       document.getElementById('cloudCover').innerText = `${clouds}%`;
       document.getElementById('cloudType').innerText = cloudType(clouds);
       
-      // REAL rain data
+      // REAL rain data - no random values
       const rain = data.rain ? data.rain['1h'] || data.rain['3h'] || 0 : 0;
-      let prob = 0;
-      if (rain > 0) {
-        prob = Math.min(85 + (rain * 5), 98);
-      } else if (weather.id >= 300 && weather.id < 600) {
-        prob = 60 + (weather.id % 10) * 3;
-      } else if (weather.id >= 200 && weather.id < 300) {
-        prob = 85 + (weather.id % 10) * 1.5;
-      } else if (weather.id === 801 || weather.id === 802) {
-        prob = 10 + Math.random() * 15;
-      } else if (weather.id === 803 || weather.id === 804) {
-        prob = 25 + Math.random() * 25;
-      } else {
-        prob = Math.random() * 10;
-      }
-      prob = Math.min(Math.max(prob, 0), 99);
+      const prob = rain > 0 ? Math.min(85 + rain * 5, 99) : 0;
       const intensity = rain || 0;
       
       document.getElementById('rainProb').innerText = `${Math.round(prob)}%`;
